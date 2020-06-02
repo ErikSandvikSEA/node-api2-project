@@ -85,9 +85,49 @@ router.post('/:id/comments', (req, res) => {
      }
 })
 
+//DELETE
+router.delete('/:id', (req, res) => {
+     const postId = req.params.id
+     Posts.remove(postId)
+          .then(deletedPost => {
+               if(deletedPost !== 1){
+                    res.status(404).json({
+                         message: "The post with the specified ID does not exist.",
+                         numberOfPostsRemoved: deletedPost
+                    })
+               } else {
+                    res.status(200).json({
+                         message: 'This posting has been removed',
+                         numberOfPostsRemoved: deletedPost,
+                    })
+               }
+          })
+          .catch(error => {
+               res.status(500).json({ error: "The post information could not be retrieved." })
+          })
+     }
+)
 
-
-
+//PUT
+router.put('/:id', (req, res) => {
+     const postWithChanges = req.body
+     const postId = req.params.id
+     if(postWithChanges.title && postWithChanges.contents){
+     Posts.update(postId, postWithChanges)
+          .then(updatedPosts => {
+               if(updatedPosts !== 1){
+                    res.status(404).json({ message: "The post with the specified ID does not exist." })
+               } else {
+                    res.status(200).json(postWithChanges)
+               }
+          })
+          .catch(error => {
+               res.status(500).json({ error: "The post information could not be modified." })
+          })
+     } else {
+          res.status(400).json({ errorMessage: "Please provide title and contents for the post." })
+     }
+})
 
 
 
