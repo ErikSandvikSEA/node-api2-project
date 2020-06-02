@@ -52,17 +52,37 @@ router.get('/:id/comments', (req, res) => {
 //POSTs
 router.post('/', (req, res) => {
      const newPost = req.body
-     Posts.insert(newPost)
-          .then(post => {
-               if(!newPost.title || !newPost.contents){
-                    res.status(400).json({ errorMessage: "Please provide title and contents for the post." })
-               } else {
-               res.status(201).json(post)
-               }
-          })
-          .catch(error => {
-               res.status(500).json({ error: "There was an error while saving the post to the database" })
-          })
+     if(newPost.title && newPost.contents){
+          res.status(400).json({ errorMessage: "Please provide title and contents for the post." })
+     } else {
+          Posts.insert(newPost)
+               .then(post => {
+                         res.status(201).json(post)
+                    }
+               )
+               .catch(error => {
+                    res.status(500).json({ error: "There was an error while saving the post to the database" })
+               })
+     }
+})
+
+router.post('/:id/comments', (req, res) => {
+     const postId = req.params.id
+     const newComment = {
+          ...req.body, 
+          post_id: postId
+     }
+     if(!postId){
+          res.status(400).json({ errorMessage: "Please provide text for the comment." })
+     } else {
+          Posts.insertComment(newComment)
+               .then(comment => {
+                    res.status(201).json(comment)
+               })
+               .catch(error => {
+                    res.status(500).json({ error: "There was an error while saving the comment to the database" })
+               })
+     }
 })
 
 
