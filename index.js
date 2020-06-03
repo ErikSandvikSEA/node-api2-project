@@ -1,4 +1,5 @@
 const express = require('express')
+const cors = require('cors')
 
 const postsRouter = require('./posts/posts-router')
 
@@ -6,6 +7,7 @@ const server = express()
 
 //middleware
 server.use(express.json())
+server.use(cors())
 
 //endpoints
 server.use('/api/posts', postsRouter)

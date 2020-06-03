@@ -72,7 +72,7 @@ router.post('/:id/comments', (req, res) => {
           ...req.body, 
           post_id: postId
      }
-     if(!postId){
+     if(!newComment.text){
           res.status(400).json({ errorMessage: "Please provide text for the comment." })
      } else {
           Posts.insertComment(newComment)
